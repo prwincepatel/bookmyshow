@@ -37,12 +37,10 @@ payload]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="getMovieByID" doc:id="150cea4d-0b08-43f0-a714-3b3289ecb82f" >
-		<logger level="INFO" doc:name="Logger" doc:id="f2a3d845-8588-4e7e-91b1-a8e1fd6d4b1a" message="#[attributes.uriParams.ID]"/>
 		<db:select doc:name="Selectmoviebyid" doc:id="adf35060-a7c2-409b-8269-cd2a60325a9f" config-ref="Database_Config">
 			<db:sql ><![CDATA[select * from movies where movieID = :movieID]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{"movieID": attributes.uriParams.ID}]]]></db:input-parameters>
 		</db:select>
-		<logger level="INFO" doc:name="Logger" doc:id="6fbc78e8-f6df-4ea9-ab40-62e06a718926" message="#[payload]"/>
 		<choice doc:name="Choice" doc:id="965c794c-d29b-4639-be3e-6a23b473f864" >
 			<when expression="#[payload == [&#10;	&#10;]]">
 				<set-payload value="Please search with the correct ID" doc:name="Set Payload" doc:id="bae4b0df-5bca-4366-9e28-8245f3fba371" />

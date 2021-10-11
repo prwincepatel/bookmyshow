@@ -3,8 +3,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-            bat 'mvn deploy -DmuleDeploy'
-      }
-    }
-}
-}
+            bat 'mvn package deploy -DmuleDeploy'
+     		}
+    				}
+		}
+		}
