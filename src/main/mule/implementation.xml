@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="f0dc1559-a535-4657-a8db-c1eb83387ffa" >
+		<db:my-sql-connection host="mysql-53288-0.cloudclusters.net" port="17204" user="prince" password="helloworld" database="bookmyshow" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="3d9ee044-5f23-4e21-9fa6-edf7a4a5d5dd" file="config.yaml" />
+	
+	<configuration doc:name="Configuration" doc:id="052aa560-af1e-4a03-8e1b-091a3f5eafee" defaultErrorHandler-ref="GlobalErrorHandlerError_Handler" />
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="0481d753-d52a-4a9d-95da-265f81682c17" >
+		<wsc:connection wsdlLocation="api\Movies.wsdl" service="Hotels" port="HotelsSoap" address="http://localhost:59006/Hotels.asmx" />
+	</wsc:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="1bdf43a8-1e15-4ac5-aeef-addc1cba885b" >
+		<email:smtp-connection host="smtp.mailtrap.io" user="e3a9c5f61e9e6d" password="bf56ee58789462"/>
+	</email:smtp-config>
+	<flow name="getmovies" doc:id="0b1f6bb0-0ac5-40bd-9f3e-ce341af60fc0" >
+		<db:select doc:name="Select movies" doc:id="ca156c9d-3f0e-4a99-b8b1-3b4836ac51b5" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from movies]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="caedc95c-a9f0-498e-9d62-cc7b26199277" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getMovieByID" doc:id="150cea4d-0b08-43f0-a714-3b3289ecb82f" >
+		<logger level="INFO" doc:name="Logger" doc:id="f2a3d845-8588-4e7e-91b1-a8e1fd6d4b1a" message="#[attributes.uriParams.ID]"/>
+		<db:select doc:name="Selectmoviebyid" doc:id="adf35060-a7c2-409b-8269-cd2a60325a9f" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from movies where movieID = :movieID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"movieID": attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="6fbc78e8-f6df-4ea9-ab40-62e06a718926" message="#[payload]"/>
+		<choice doc:name="Choice" doc:id="965c794c-d29b-4639-be3e-6a23b473f864" >
+			<when expression="#[payload == [&#10;	&#10;]]">
+				<set-payload value="Please search with the correct ID" doc:name="Set Payload" doc:id="bae4b0df-5bca-4366-9e28-8245f3fba371" />
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="5d65b5a1-8a78-4113-a82e-e5554f947334">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="bookmovie" doc:id="ace86443-3c73-42b0-9551-23a4bb5eda51" >
+		<set-payload value="#[payload]" doc:name="userInput" doc:id="afa2e336-120a-49a3-964b-0e046aa1a85c" />
+		<set-variable value="#[payload.noofseats]" doc:name="noofseats" doc:id="2dc0734b-68fd-44fa-b1d1-90a2cdbb0398" variableName="noofseats"/>
+		<validation:is-not-null doc:name="Is not null" doc:id="309cbe54-9cb0-47f0-950e-f60410a8def8" value="#[vars.noofseats]" message="The seat no is null"/>
+		<os:store doc:name="userInput" doc:id="9ee985c9-88a7-482c-b8a8-8148587a4b8a" key="customerinfo"/>
+		<set-variable value="#[payload.movieID]" doc:name="movieid" doc:id="2bc9f1cb-963f-41d4-9ebd-8bf547b0aa19" variableName="movieid"/>
+		<validation:is-not-null doc:name="Is not null" doc:id="59fcc0ba-8b1a-4431-b645-04a4b3dbc6d2" value="#[vars.movieid]" message="Movie id is null"/>
+		<flow-ref doc:name="getFullMovieList" doc:id="655adc02-4ca2-4d3e-9d41-a8fa0adee299" name="getmovies"/>
+		<try doc:name="Try" doc:id="7c0e58d9-13df-48a4-b01a-ee854c27b2a5" >
+			<ee:transform doc:name="compareMovieID" doc:id="8e31d479-1268-45c2-8e90-721de4ce0288">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload filter ($.movieID == vars.movieid) map {
+	
+	Movie: $.moviename,
+	Date: $.moviedate,
+	Time: $.movietime,
+	place: $.place,
+	Theatre: $.theatre,
+	TotalAmount: $.price * vars.noofseats,
+	numberofseats: $.availableseats
+	
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="4753fecb-43f5-4669-9560-55a937360838" >
+					<set-payload value="Movie not found" doc:name="Notfound" doc:id="4f42d9da-f98c-4d0e-bdaf-12b99b46b3c0" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<choice doc:name="Choice" doc:id="37864a92-c666-41bb-ac12-bad5e4f38634" >
+			<when expression='#[payload == "Movie not found" or payload == [ &#10;	&#10;]]'>
+				<set-payload value="Movie not found" doc:name="notFound" doc:id="637d6873-bdee-4e7e-a0bf-0e55565c9373" />
+			</when>
+			<otherwise>
+				<flow-ref doc:name="seatValidation" doc:id="38f20c07-fa46-47fb-badc-7f936a6c1906" name="SeatValidation" />
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="DiscountFlow" doc:id="eed3515e-2fe6-497b-a578-cb0810e45122" >
+		<choice doc:name="Choice" doc:id="b2997e4a-0c11-4f6d-ac9a-7dfbaf64d756">
+					<when expression="#[vars.noofseats &gt; 1]">
+						<ee:transform doc:name="applyingDiscount" doc:id="a50048fd-6c89-42b1-8e27-cc56791d29cb">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	moviename: payload01.Movie as String,
+	date: payload01.Date as String,
+	time: payload01.Time as String,
+	place: payload01.place as String,
+	theatre: payload01.Theatre as String,
+	totalprice: payload01.TotalAmount * 0.75,
+	bookingid:  randomInt(100000) as String {format: "#"}
+	
+	
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</when>
+			<otherwise>
+						<ee:transform doc:name="noDiscount" doc:id="faac6e7f-1e20-441a-a59d-a91fbdc4aaa8">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	moviename: payload01.Movie as String,
+	date: payload01.Date as String,
+	time: payload01.Time as String,
+	place: payload01.place as String,
+	theatre: payload01.Theatre as String,
+	totalprice: payload01.TotalAmount,
+	bookingid:  randomInt(100000) as String {format: "#"}
+	
+	
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
+		<os:retrieve doc:name="RetrieveCustomerDetails" doc:id="8aa9a9d1-113d-4a5d-be2f-6701de2a91a5" key="customerinfo" target="test" />
+		<ee:transform doc:name="Transform Message" doc:id="84a4585d-416f-47a1-8fda-a1cdd1d0b1eb">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload[0] ++ vars.test
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="9f7602d7-32dc-420d-9b90-000263b5ed69" name="insertIntoBookedorder" />
+	</sub-flow>
+	<sub-flow name="SeatValidation" doc:id="fa422edc-64df-4832-8d3a-4132ddf0e49c" >
+		<choice doc:name="Choice" doc:id="7b1ec417-d642-4cd2-b5fe-26a8cec5ee1b" >
+			<when expression="#[payload.numberofseats[0] &lt; vars.noofseats]">
+				<set-payload value="Please change number of seats to proceed" doc:name="Set Payload" doc:id="f8322398-d140-4a82-b2a7-3f9009b37ec4" />
+			</when>
+			<otherwise>
+				<set-variable value="#[payload.numberofseats[0]]" doc:name="availableseats" doc:id="4ecea4e9-e2ba-4ad1-a1a5-9464dbbe5dd3" variableName="availableseats"/>
+				<flow-ref doc:name="Flow Reference" doc:id="6926802f-9b49-4209-98db-dd50cb781923" name="DiscountFlow"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="insertIntoBookedorder" doc:id="349c433d-5464-4260-a5f0-de926943ca9e" >
+		<os:store doc:name="Store" doc:id="31c6f73c-4bab-4e61-aa10-3c1f48f4edb8" key="bookingDetails"/>
+		<db:insert doc:name="Insert into bookedorder table" doc:id="f677f80d-43b3-4745-af65-16dd4386e551" config-ref="Database_Config">
+			<db:sql><![CDATA[INSERT INTO bookedorder(bookingID,movieID,email,phone,noofseats,totalamount,currentstatus) VALUES (:bookingid,:movieid,:email,:phone,:noofseats,:totalamount,:status)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"movieid": payload.movieID,
+	"email": payload.email,
+	"phone": payload.phone,
+	"totalamount": payload.totalprice,
+	"status": "Booked",
+	"bookingid": payload.bookingid,
+	"noofseats": vars.noofseats
+}]]]></db:input-parameters>
+		</db:insert>
+		<os:retrieve doc:name="Retrieve" doc:id="300b5884-ef1a-48b6-a7d7-8064f6548050" key="bookingDetails" target="bookingDetailsVar"/>
+		<set-payload value="#[vars.bookingDetailsVar]" doc:name="Set Payload" doc:id="dfbe58f0-13b4-44d6-815b-8d4fa3584bf2" />
+		<db:update doc:name="Update AvailableSeats" doc:id="36f753b9-bacb-4735-9ea4-7c569f4fa7bf" config-ref="Database_Config">
+			<db:sql><![CDATA[update movies set availableseats = :avs where movieID = :movieid]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	"movieid": payload.movieID,
+	"avs": vars.availableseats - vars.noofseats
+}]]]></db:input-parameters>
+		</db:update>
+		<os:retrieve doc:name="Retrieve" doc:id="343c2ff4-ecc9-42f5-9949-27cb8fa7aab6" key="bookingDetails"/>
+		<logger level="INFO" doc:name="Logger" doc:id="99c29254-2c1d-4ca2-ae35-ffecec78fdab" message="#[payload]"/>
+		<email:send doc:name="Send" doc:id="b5227d85-a672-4feb-8401-0a23199f3ef6" config-ref="Email_SMTP" fromAddress="prince.m.patel@apisero.com" subject="Booking Confirmation">
+			<email:to-addresses >
+				<email:to-address value="#[payload.email]" />
+			</email:to-addresses>
+			<email:reply-to-addresses />
+		</email:send>
+		<ee:transform doc:name="Transform Message" doc:id="90aec9f7-d440-4158-bc38-5ef932c64bbe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message": "Movie Booked Successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<flow name="cancelbooking" doc:id="863aed11-185b-41c8-95c0-03f6b98da235" >
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="339be978-0835-4fef-bc18-c117a9661e77" />
+		<set-variable value="#[payload.bookingID]" doc:name="bookingID" doc:id="ece315b8-108e-49ec-a87f-45d91b38890e" variableName="bookingID"/>
+		<flow-ref doc:name="Flow Reference" doc:id="793e460f-5470-46f4-a9cf-55d09ed82c01" name="EmailAndIDValidation"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1b63cbcc-575c-4985-971b-2b84b8e29c2e" message="#[payload]" />
+		<choice doc:name="Choice" doc:id="816ca381-83a5-43bc-a986-868606d92298" >
+			<when expression="#[payload == []]">
+				<set-payload value="Please provide the correct Email and Booking ID" doc:name="Set Payload" doc:id="deb8e617-ed3f-45c2-880a-c776441fe003" />
+			</when>
+			<otherwise>
+				<db:update doc:name="Update" doc:id="d3cebcd4-3d8b-4863-8606-e24987e19f09" config-ref="Database_Config">
+			<db:sql><![CDATA[update bookedorder set currentstatus = :cancel where bookingID = :bID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	"cancel": "Cancelled",
+	"bID": vars.bookingID
+}]]]></db:input-parameters>
+		</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="5383dc67-ccd4-41f3-aed8-75c00fa15618">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message": "Booking cancelled"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="EmailAndIDValidation" doc:id="b4d4e84c-c1ac-4826-b355-27a0570a1dc0" >
+		<db:select doc:name="Select" doc:id="260d3f7b-001c-4388-84fe-8b3a792bc273" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from bookedorder where bookingID = :bID and email = :eID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+"bID": vars.bookingID,
+"eID": payload.email
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="ef79c74a-69a9-41e5-8631-d9b371734502" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<flow name="implementationFlow" doc:id="20dcf1c5-3106-4b42-bc17-b83d02d501e8" >
+		<http:listener doc:name="Listener" doc:id="e4aeaf93-ed1b-4860-a424-f273e8fe8e68" config-ref="bookmyshow-api-httpListenerConfig" path="/bookmovie"/>
+		<wsc:consume operation="BookMovie" doc:name="Consume" doc:id="3d8b3949-16fc-4a26-9869-755703915ab3" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="25e60020-bf82-4741-8882-3f23065cd6c8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+"test": {
+	"hola": payload
+	}
+	}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,52 @@
+#%RAML 1.0
+title: BookMyShow API
+
+uses:
+  mylib: Library/library.raml
+
+/movies:
+  type: {mylib.collection : {typeName: mylib.outputResponse}}
+  get:
+  
+  /{ID}:
+    get:
+        responses:
+          200:
+            body:
+              application/json:
+                examples:
+                  output: !include examples/oneMovieExample.raml  
+          400:
+            body:
+              application/json:
+                example:
+                  message: please provide id
+
+/bookmovie:
+  type: {mylib.collection : {typeName: mylib.inputrequest}}
+  post:
+
+/Cancelbooking:
+  post:
+    description: Create a <<resourcePathName|!singularize>> request       
+    body:
+      application/json:
+        type: mylib.cancelrequest
+        examples:
+          input: !include examples/canceloneInputExample.raml 
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: Booking successfully cancelled
+      400:
+        body:
+          application/json:
+            example:
+              message: please provide correct data
+
+  
+    
+          
+        

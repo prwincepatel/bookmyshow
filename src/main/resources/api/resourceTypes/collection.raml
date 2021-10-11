@@ -1,0 +1,38 @@
+#%RAML 1.0 ResourceType
+
+usage: Use this resourceType to represent any collection of items
+description: A collection of <<resourcePathName>>
+ 
+get?:
+  description: Get all <<resourcePathName>>, optionally filtered 
+  responses:
+    200:
+      body:
+        application/json:
+          type: <<typeName>>[]
+          examples:
+            output: !include ../examples/MoviesExample.raml
+    400:
+      body: 
+        application/json:
+          example:
+            message: "Loading failed"
+   
+post?:
+  description: Create a new <<resourcePathName|!singularize>> request
+  body:
+      application/json:
+        type: <<typeName>>
+        examples:
+          input: !include ../examples/oneInputExample.raml
+  responses:
+    201:
+      body:
+        application/json:
+          example:
+            message: "Movie booked successfully. Please check your email for the ticket"
+    400:
+      body: 
+        application/json:
+          example:
+            message: "sorry the booking is failed"

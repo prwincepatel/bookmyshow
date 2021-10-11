@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_863aed11_185b_41c8_95c0_03f6b98da235_Input_Payload = {
+  paymentmode: String, 
+  phone: String, 
+  bookingID: Number, 
+  email: String, 
+  _?: Any
+}
+

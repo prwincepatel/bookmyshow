@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="GlobalErrorHandlerError_Handler" doc:id="de8a55e9-92ed-433d-b5ab-1e3048abaf3c" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue db ERROR" doc:id="2f3abeba-8ce3-466e-b944-601780a272a6" type="DB:BAD_SQL_SYNTAX, DB:CONNECTIVITY, DB:QUERY_EXECUTION, DB:RETRY_EXHAUSTED">
+			<logger level="INFO" doc:name="Logger" doc:id="e1bb1dd0-091c-4db4-b0c8-9d89a7d3cc2b" message="#[payload]"/>
+			<set-payload value="Something went wrong!!" doc:name="Set Payload" doc:id="ea7499fe-7828-4308-b291-6ffde6efcad1" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="97974ebd-2642-4484-84c1-126cf57da0cf" type="ANY">
+			<logger level="INFO" doc:name="Logger" doc:id="ac12d701-f177-4f02-8fa2-0ee8de4e67c3" message="#[payload]" />
+			<set-payload value="Something went wrong!!" doc:name="Set Payload" doc:id="4d46f928-9fad-4324-afc6-f46288bdc974" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue OS ERROR" doc:id="8e2969f3-0db0-4e49-8ba5-ba729463d59c" type="OS:INVALID_KEY, OS:KEY_ALREADY_EXISTS, OS:KEY_NOT_FOUND, OS:NULL_VALUE, OS:STORE_NOT_AVAILABLE">
+			<logger level="INFO" doc:name="Logger" doc:id="cbae25d5-c2b5-488c-9354-7b85eaf0bd1e" message="#[payload]"/>
+			<set-payload value="Something went wrong!!" doc:name="Set Payload" doc:id="fe8cc5a9-1820-4932-b1f2-07e2b77d027b" />
+		</on-error-continue>
+	</error-handler>
+</mule>

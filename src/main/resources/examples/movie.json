@@ -1,0 +1,42 @@
+[
+  {
+    "ID": 1001,
+    "moviename": "Before We Go",
+    "date": "10/10/2021",
+    "time": "20:00",
+    "place": "Delhi",
+    "theatre": "Inox",
+    "price": 250,
+    "availableseats": 25
+  },
+  {
+    "ID": 2002,
+    "moviename": "Chemical Hearts",
+    "date": "11/10/2021",
+    "time": "15:00",
+    "place": "Delhi",
+    "theatre": "CineMax",
+    "price": 150,
+    "availableseats": 30
+  },
+  {
+    "ID": 2003,
+    "moviename": "Sherlock Holmes",
+    "date": "11/10/2021",
+    "time": "19:00",
+    "place": "Mumbai",
+    "theatre": "Inox",
+    "price": 300,
+    "availableseats": 5
+  },
+  {
+    "ID": 3001,
+    "moviename": "Me Before You",
+    "date": "12/10/2021",
+    "time": "21:00",
+    "place": "Kolkata",
+    "theatre": "CinePlex",
+    "price": 200,
+    "availableseats": 10
+  }
+]
