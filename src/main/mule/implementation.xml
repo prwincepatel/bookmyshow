@@ -31,8 +31,20 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
 ---
-payload]]></ee:set-payload>
+payload map(item,index) ->
+{
+	"Movie ID": item.movieID,
+	"Movie Name": item.moviename,
+	"Price": item.price,
+	"City": item.place,
+	"Theatre": item.theatre,
+	"Date": item.moviedate,
+	"Time": item.movietime,
+	"Available Seats": item.availableseats
+	
+	}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
@@ -50,8 +62,20 @@ payload]]></ee:set-payload>
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
+
 ---
-payload]]></ee:set-payload>
+payload map(item,index) ->
+{
+	"Movie ID": item.movieID,
+	"Movie Name": item.moviename,
+	"Price": item.price,
+	"City": item.place,
+	"Theatre": item.theatre,
+	"Date": item.moviedate,
+	"Time": item.movietime,
+	"Available Seats": item.availableseats
+	
+	}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 			</otherwise>
@@ -169,14 +193,15 @@ payload[0] ++ vars.test
 	<sub-flow name="insertIntoBookedorder" doc:id="349c433d-5464-4260-a5f0-de926943ca9e" >
 		<os:store doc:name="Store" doc:id="31c6f73c-4bab-4e61-aa10-3c1f48f4edb8" key="bookingDetails"/>
 		<db:insert doc:name="Insert into bookedorder table" doc:id="f677f80d-43b3-4745-af65-16dd4386e551" config-ref="Database_Config">
-			<db:sql><![CDATA[INSERT INTO bookedorder(bookingID,movieID,email,phone,noofseats,totalamount,currentstatus) VALUES (:bookingid,:movieid,:email,:phone,:noofseats,:totalamount,:status)]]></db:sql>
+			<db:sql><![CDATA[INSERT INTO bookedorder(bookingID,movieID,email,phone,noofseats,totalamount,currentstatus,date) VALUES (:bookingid,:movieid,:email,:phone,:noofseats,:totalamount,:status,:date)]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"movieid": payload.movieID,
 	"email": payload.email,
 	"phone": payload.phone,
 	"totalamount": payload.totalprice,
 	"status": "Booked",
 	"bookingid": payload.bookingid,
-	"noofseats": vars.noofseats
+	"noofseats": vars.noofseats,
+	"date": now() as String
 }]]]></db:input-parameters>
 		</db:insert>
 		<os:retrieve doc:name="Retrieve" doc:id="300b5884-ef1a-48b6-a7d7-8064f6548050" key="bookingDetails" target="bookingDetailsVar"/>
@@ -221,7 +246,8 @@ output application/json
 			<db:sql><![CDATA[update bookedorder set currentstatus = :cancel where bookingID = :bID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{
 	"cancel": "Cancelled",
-	"bID": vars.bookingID
+	"bID": vars.bookingID,
+	
 }]]]></db:input-parameters>
 		</db:update>
 				<ee:transform doc:name="Transform Message" doc:id="5383dc67-ccd4-41f3-aed8-75c00fa15618">
