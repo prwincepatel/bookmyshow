@@ -1,57 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
-		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
-	<munit:config name="implementation-test-suite.xml" />
-	<munit:test name="implementation-test-suite-getmoviesTest" doc:id="6b584f4e-1d4d-47c9-b013-0ffa369dfe43" description="Test">
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock select" doc:id="caa12292-b98e-4f43-9160-733643b8f14b" processor="db:select">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Select movies" attributeName="doc:name" />
-				</munit-tools:with-attributes>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Event" doc:id="1fa872df-387d-48ae-aa0b-2d760aad6da9" >
-				<munit:payload value='[&#10;  {&#10;    "theatre": "Inox",&#10;    "availableseats": 8,&#10;    "price": 250,&#10;    "movieID": 1001,&#10;    "movietime": "21:00",&#10;    "place": "Delhi",&#10;    "moviedate": "10/10/2021",&#10;    "moviename": "Before We Go"&#10;  },&#10;  {&#10;    "theatre": "Cineplex",&#10;    "availableseats": 38,&#10;    "price": 180,&#10;    "movieID": 2002,&#10;    "movietime": "15:00",&#10;    "place": "Banglore",&#10;    "moviedate": "11/10/2021",&#10;    "moviename": "Chemical Hearts"&#10;  }&#10;]&#10;    ' />
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to getmovies" doc:id="df590541-8aa9-4692-ab98-b9ab92f949af" name="getmovies"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="85cf11e2-ed9b-43fe-875e-57f5ac08a9f1" />
-		</munit:validation>
-	</munit:test>
-	<munit:test name="implementation-test-suite-getMovieByIDTest" doc:id="42a65881-91f2-4e99-9dab-6e2984aa8800" description="Test">
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock select" doc:id="c14ed52f-9a6e-420b-bbe9-3f960011f2f5" processor="db:select">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Selectmoviebyid" attributeName="doc:name" />
-				</munit-tools:with-attributes>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Event" doc:id="61a407a5-41f5-42fe-8d79-77dada6d142e" >
-				<munit:payload value='[&#10;  {&#10;    "theatre": "Cineplex",&#10;    "availableseats": 38,&#10;    "price": 180,&#10;    "movieID": 2002,&#10;    "movietime": "15:00",&#10;    "place": "Banglore",&#10;    "moviedate": "11/10/2021",&#10;    "moviename": "Chemical Hearts"&#10;  }&#10;]' />
-			</munit:set-event>
-			<munit-tools:mock-when doc:name="Mock choice" doc:id="2c2ade7a-dc8a-496a-b464-f1f4c3ac3399" processor="when">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="#[payload == [&#10;	&#10;]]" attributeName="expression" />
-				</munit-tools:with-attributes>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Event" doc:id="c1365462-457c-499b-a657-56ead446bc29" >
-				<munit:payload value="Please search with the correct ID" />
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to getMovieByID" doc:id="936a2a80-8f3a-4d2a-9bd4-5416a3881edd" name="getMovieByID"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="a3a7c6a5-0bea-475f-930f-b28191b74d12" />
-		</munit:validation>
-	</munit:test>
-
-
-</mule>
