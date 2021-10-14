@@ -37,8 +37,8 @@
 					</sharedLibraries>
 					<cloudHubDeployment>
 						<uri>https://anypoint.mulesoft.com</uri>
-						<username>robot9033</username>
-						<password>1@Apisero.com</password>
+						<username>prince.m.patel@apisero.com</username>
+						<password>1@Apisero</password>
 						<muleVersion>4.4.0</muleVersion>
 						<applicationName>bookmyshowas</applicationName>
 						<workers>1</workers>
