@@ -40,7 +40,7 @@
 					</sharedLibraries>
 					<cloudHubDeployment>
 						<uri>https://anypoint.mulesoft.com</uri>
-						<muleVersion>4.3.0</muleVersion>
+						<muleVersion>4.4.0</muleVersion>
 						<username>robot9033</username>
 						<password>1@Apisero.com</password>
 						<!-- <connectedAppClientId>a6f7c798a2f042238f1ab66e0111152e</connectedAppClientId>
@@ -51,7 +51,7 @@
 						<workerType>MICRO</workerType>
 						<region>us-east-2</region>
 						<environment>Sandbox</environment>
-						<applicationName>bookmyshow-pipeline</applicationName>
+						<applicationName>bookmyshow-pipe</applicationName>
 						<objectStoreV2>true</objectStoreV2>
 					</cloudHubDeployment>
 				</configuration>
