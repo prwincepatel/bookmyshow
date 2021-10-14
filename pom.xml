@@ -40,7 +40,7 @@
 						<username>robot9033</username>
 						<password>1@Apisero.com</password>
 						<muleVersion>4.4.0</muleVersion>
-						<applicationName>bookmyshowas</applicationName>
+						<applicationName>bookmyshow11</applicationName>
 						<workers>1</workers>
 						<environment>Sandbox</environment>	
 						<workerType>Micro</workerType>
