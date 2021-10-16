@@ -19,7 +19,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>  
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>
 			</plugin>
@@ -42,7 +42,7 @@
 						<muleVersion>4.4.0</muleVersion>
 						<applicationName>bookmyshow11</applicationName>
 						<workers>1</workers>
-						<environment>Sandbox</environment>	
+						<environment>Sandbox</environment>
 						<workerType>Micro</workerType>
 						<region>us-east-2</region>
 						<objectStoreV2>true</objectStoreV2>
@@ -136,13 +136,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>93688943-6f9c-4d4b-a49b-2d2e866b479c</groupId>
-			<artifactId>bookmyshowbyus</artifactId>
-			<version>1.0.0</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-runner</artifactId>
 			<version>2.3.5</version>
@@ -161,6 +154,13 @@
 			<version>2.3.6</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>93688943-6f9c-4d4b-a49b-2d2e866b479c</groupId>
+			<artifactId>bookmyshowbyus</artifactId>
+			<version>1.0.1</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 
