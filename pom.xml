@@ -43,6 +43,7 @@
 						<applicationName>bookmyshow11</applicationName>
 						<workers>1</workers>
 						<environment>Sandbox</environment>
+						<businessGroup>Mulesoft</businessGroup>
 						<workerType>Micro</workerType>
 						<region>us-east-2</region>
 						<objectStoreV2>true</objectStoreV2>
