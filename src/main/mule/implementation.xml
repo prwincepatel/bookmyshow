@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="f0dc1559-a535-4657-a8db-c1eb83387ffa" >
-		<db:my-sql-connection host="mysql-53288-0.cloudclusters.net" port="17204" user="prince" password="helloworld" database="bookmyshow" />
+		<db:my-sql-connection host="mysql-54291-0.cloudclusters.net" port="17926" user="prince" password="helloworld" database="BookMyShow" />
 	</db:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="3d9ee044-5f23-4e21-9fa6-edf7a4a5d5dd" file="config.yaml" />
 	
