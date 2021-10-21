@@ -50,6 +50,7 @@ payload map(item,index) ->
 	}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="222eee5b-db75-4581-b899-1eaddce9974e" message="#[payload]"/>
 	</flow>
 	<flow name="getMovieByID" doc:id="150cea4d-0b08-43f0-a714-3b3289ecb82f" >
 		<db:select doc:name="Selectmoviebyid" doc:id="adf35060-a7c2-409b-8269-cd2a60325a9f" config-ref="Database_Config">
