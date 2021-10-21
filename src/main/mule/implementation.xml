@@ -223,6 +223,7 @@ payload[0] ++ vars.test
 				<email:to-address value="#[payload.email]" />
 			</email:to-addresses>
 			<email:reply-to-addresses />
+			<email:body contentTransferEncoding="Quoted-Printable" />
 		</email:send>
 		<ee:transform doc:name="Transform Message" doc:id="90aec9f7-d440-4158-bc38-5ef932c64bbe" >
 			<ee:message >
@@ -230,7 +231,11 @@ payload[0] ++ vars.test
 output application/json
 ---
 {
-	"Message": "Movie Booked Successfully. Booking Details has been sent to your email."
+	"Message": "Movie Booked Successfully. Booking Details has been sent to your email.",
+	Discount: if(vars.noofseats > 1)
+	("Congratulation You Got 25% Discount on this Booking")
+	else
+	("No Discount on this Booking")
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
